@@ -244,25 +244,44 @@ function AssistantMessage({
             </div>
           )}
 
-          {/* Main answer content */}
+          {/* Main answer content — subtle card for future like/dislike footer */}
           {hasContent && (
             <div
-              className="prose-odi text-sm"
-              dangerouslySetInnerHTML={{ __html: renderMarkdown(message.content) }}
-              onClick={(e) => {
-                const target = (e.target as HTMLElement).closest(".source-link")
-                if (target && onOpenSource) {
-                  e.preventDefault()
-                  const fn = (target as HTMLAnchorElement).dataset.filename
-                  if (fn) onOpenSource(fn)
-                }
+              className="response-card rounded-lg overflow-hidden"
+              style={{
+                background: "var(--response-card-bg)",
+                border: "1px solid var(--response-card-border)",
               }}
-            />
-          )}
-
-          {/* Streaming cursor */}
-          {message.isStreaming && hasContent && (
-        <span className="inline-block w-1.5 h-4 animate-pulse ml-0.5 rounded-sm" style={{ background: "var(--primary)" }} />
+            >
+              <div className="flex flex-wrap items-baseline gap-x-1">
+                <div
+                  className="prose-odi text-sm px-3.5 py-2.5 flex-1 min-w-0"
+                  dangerouslySetInnerHTML={{ __html: renderMarkdown(message.content) }}
+                  onClick={(e) => {
+                    const target = (e.target as HTMLElement).closest(".source-link")
+                    if (target && onOpenSource) {
+                      e.preventDefault()
+                      const fn = (target as HTMLAnchorElement).dataset.filename
+                      if (fn) onOpenSource(fn)
+                    }
+                  }}
+                />
+                {message.isStreaming && (
+                  <span
+                    className="inline-block w-1.5 h-4 animate-pulse rounded-sm shrink-0"
+                    style={{ background: "var(--primary)" }}
+                  />
+                )}
+              </div>
+              {!message.isStreaming && (
+                <div
+                  className="response-card-footer flex items-center gap-1 px-3.5 py-2 border-t"
+                  style={{ borderColor: "var(--response-card-border)" }}
+                >
+                  {/* 预留：点赞、点踩等小按钮 */}
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>

@@ -43,6 +43,9 @@
   --breathe-glow: rgba(249,115,22,0.35);
   /* Check/copied confirmation — stays on-theme */
   --check-color: #f97316;
+  /* Response card — very subtle, not obviously card-like */
+  --response-card-bg: rgba(0,0,0,0.015);
+  --response-card-border: rgba(0,0,0,0.05);
 }
 
 /* ===== DARK MODE ===== */
@@ -84,6 +87,9 @@
   --user-bubble-bg: rgba(249,115,22,0.55);
   --user-bubble-text: #ffffff;
   --user-bubble-border: rgba(249,115,22,0.5);
+  /* Response card — subtle on dark */
+  --response-card-bg: rgba(255,255,255,0.02);
+  --response-card-border: rgba(255,255,255,0.05);
 }
 
 @theme inline {
@@ -171,7 +177,7 @@
 
 /* Markdown prose — compact, mobile-friendly */
 .prose-odi { color: var(--foreground); line-height: 1.35; opacity: 0.9; font-size: 0.875rem; }
-.prose-odi h1 { font-size: 1.2rem; color: #ea580c; font-weight: 600; margin: 0.5em 0 0.3em; opacity: 1; line-height: 1.2; }
+.prose-odi h1 { font-size: 1.2rem; color: var(--foreground); font-weight: 600; margin: 0.5em 0 0.3em; opacity: 1; line-height: 1.2; }
 .prose-odi h2 { font-size: 1.1rem; color: #ea580c; font-weight: 600; margin: 0.35em 0 0.12em; opacity: 1; line-height: 1.2; }
 .prose-odi h3 { font-size: 1.02rem; color: #ea580c; font-weight: 600; margin: 0.3em 0 0.1em; opacity: 1; line-height: 1.2; }
 .prose-odi p { margin: 0.15em 0; }
@@ -233,7 +239,7 @@
 .prose-odi table.prose-odi-table tr:last-child th {
   border-bottom: none;
 }
-/* Dark mode: brighter orange for headings/bold on dark bg */
-.dark .prose-odi h1, .dark .prose-odi h2, .dark .prose-odi h3,
+/* Dark mode: h1 stays foreground; h2/h3/strong use orange */
+.dark .prose-odi h2, .dark .prose-odi h3,
 .dark .prose-odi strong { color: #f97316 !important; }
 .dark .ai-avatar-dark span { color: #f97316 !important; }
