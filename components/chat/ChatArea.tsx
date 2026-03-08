@@ -22,9 +22,13 @@ export default function ChatArea({
 }: ChatAreaProps) {
   const bottomRef = useRef<HTMLDivElement>(null)
 
+  // Only scroll to bottom on new messages or streaming updates, NOT on tool expand/collapse
+  const scrollTrigger = messages.length > 0
+    ? `${messages.length}-${messages[messages.length - 1]?.content?.length ?? 0}`
+    : "0"
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
+  }, [scrollTrigger])
 
   if (isNewSession && messages.length === 0) {
     return (
