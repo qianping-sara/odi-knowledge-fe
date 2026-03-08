@@ -8,8 +8,12 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
   title: 'ODI China Knowledge AI',
-  description: 'Your open knowledge layer. Ask anything, anytime.',
+  description: 'Your trusted knowledge layer. Ask anything, anytime.',
   generator: 'v0.app',
+  icons: {
+    icon: '/ascentium_logo.png',
+    apple: '/ascentium_logo.png',
+  },
 }
 
 export const viewport: Viewport = {

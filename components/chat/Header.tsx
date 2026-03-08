@@ -1,6 +1,7 @@
 "use client"
 
-import { PanelLeftOpen, PanelLeftClose, Plus, Trash2, Sun, Moon, ChevronDown } from "lucide-react"
+import Image from "next/image"
+import { PanelLeftOpen, PanelLeftClose, Plus, Trash2, Sun, Moon } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,11 +38,14 @@ export default function Header({
     >
       {/* Logo + Brand */}
       <div className="flex items-center gap-3 flex-1">
-        <div
-          className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0 shadow-sm"
-          style={{ background: "linear-gradient(135deg, #f97316 55%, #fb923c 100%)" }}
-        >
-          <span className="text-[11px] font-black tracking-tight leading-none">ODI</span>
+        <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+          <Image
+            src="/ascentium_logo.png"
+            alt="Ascentium"
+            width={36}
+            height={36}
+            className="object-contain"
+          />
         </div>
         <div className="leading-tight">
           <div
