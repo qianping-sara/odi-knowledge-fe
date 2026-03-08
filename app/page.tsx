@@ -7,6 +7,7 @@ import Sidebar from "@/components/chat/Sidebar"
 import ChatArea from "@/components/chat/ChatArea"
 import ChatInput from "@/components/chat/ChatInput"
 import EditMessageBar from "@/components/chat/EditMessageBar"
+import SourceDrawer from "@/components/chat/SourceDrawer"
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -14,6 +15,13 @@ export default function Home() {
   const [editMode, setEditMode] = useState(false)
   const [editValue, setEditValue] = useState("")
   const [isMd, setIsMd] = useState(false)
+  const [sourceDrawerOpen, setSourceDrawerOpen] = useState(false)
+  const [sourceFilename, setSourceFilename] = useState<string | null>(null)
+
+  function handleOpenSource(filename: string) {
+    setSourceFilename(filename)
+    setSourceDrawerOpen(true)
+  }
 
   // Track viewport size
   useEffect(() => {
@@ -122,6 +130,7 @@ export default function Home() {
               isNewSession={isNewSession}
               onEditMessage={handleEditMessage}
               onToggleToolCall={toggleToolCall}
+              onOpenSource={handleOpenSource}
             />
           </div>
 
@@ -150,6 +159,12 @@ export default function Home() {
           )}
         </main>
       </div>
+
+      <SourceDrawer
+        open={sourceDrawerOpen}
+        onOpenChange={setSourceDrawerOpen}
+        filename={sourceFilename}
+      />
     </div>
   )
 }

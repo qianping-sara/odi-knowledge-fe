@@ -50,6 +50,33 @@ export async function fetchSession(sessionId: string): Promise<Session> {
   return json.data
 }
 
+// ── Knowledge source (document content) ─────────────────────────────────────
+
+export interface KnowledgeSourcePage {
+  page_index: number
+  markdown: string
+  images?: string[]
+}
+
+export interface KnowledgeSourceData {
+  doc_id: string
+  doc_name: string
+  pages: KnowledgeSourcePage[]
+  total_pages: number
+}
+
+export async function fetchKnowledgeSource(
+  filename: string
+): Promise<{ code: number; data?: KnowledgeSourceData; message?: string }> {
+  const res = await fetch(
+    `${API}/knowledge/source?file=${encodeURIComponent(filename)}`,
+    { cache: "no-store" }
+  )
+  const json = await res.json()
+  if (!res.ok) return json
+  return json
+}
+
 // ── Streaming completions ─────────────────────────────────────────────────────
 
 export async function* sendMessageStream(

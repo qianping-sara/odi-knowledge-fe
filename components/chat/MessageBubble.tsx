@@ -10,10 +10,46 @@ interface MessageBubbleProps {
   message: UIMessage
   onEditMessage: (content: string) => void
   onToggleToolCall: (messageId: string, toolCallId: string) => void
+  onOpenSource?: (filename: string) => void
+}
+
+function escapeAttr(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;")
+}
+
+function parseTableBlock(match: string): string {
+  const rows = match
+    .trim()
+    .split("\n")
+    .map((line) =>
+      line
+        .split("|")
+        .slice(1, -1)
+        .map((c) => c.trim())
+    )
+  if (rows.length < 1) return match
+  const first = rows[0]
+  const isSep = (arr: string[]) => arr.every((c) => /^:?-+:?$/.test(c) || /^-+$/.test(c))
+  const hasSeparator = rows.length >= 2 && isSep(rows[1])
+  const headerRow = hasSeparator ? rows[0] : null
+  const bodyRows = hasSeparator ? rows.slice(2) : rows
+  const toCell = (c: string, th: boolean) =>
+    th ? `<th>${c}</th>` : `<td>${c}</td>`
+  let html = "<table class=\"prose-odi-table\"><tbody>"
+  if (headerRow && headerRow.some(Boolean)) {
+    html = "<table class=\"prose-odi-table\"><thead><tr>"
+    html += headerRow.map((c) => toCell(c, true)).join("") + "</tr></thead><tbody>"
+  }
+  for (const row of bodyRows) {
+    if (row.some(Boolean)) html += "<tr>" + row.map((c) => toCell(c, false)).join("") + "</tr>"
+  }
+  return html + "</tbody></table>"
 }
 
 function renderMarkdown(text: string): string {
   return text
+    // Tables (must run before \n -> <br />)
+    .replace(/(?:^\|.+\|\s*\n)+/gm, parseTableBlock)
     // Horizontal rule
     .replace(/^---$/gm, "<hr />")
     // Bold
@@ -36,6 +72,17 @@ function renderMarkdown(text: string): string {
     .replace(/\n/g, "<br />")
     // Wrap consecutive <li> in <ul>
     .replace(/((?:<li>.*?<\/li>(?:<br \/>)?)+)/g, (m) => "<ul>" + m.replace(/<br \/>/g, "") + "</ul>")
+    // Source tag: [Source: 《filename》，第X页] -> bagel-style tag (whole block first)
+    .replace(/\[Source:\s*《([^》]+)》(?:[，,]\s*([^\]]*))?\]/g, (_, f, pages) => {
+      const fn = f.trim()
+      const pagesStr = pages ? pages.trim() : ""
+      const suffix = pagesStr ? `，${pagesStr}` : ""
+      return `<span class="source-tag"><em><a href="#" class="source-link" data-filename="${escapeAttr(fn)}">《${fn}》</a>${suffix}</em></span>`
+    })
+    // Fallback: standalone 《filename》 -> clickable
+    .replace(/《([^》]+)》/g, (_, f) =>
+      `<a href="#" class="source-link" data-filename="${escapeAttr(f.trim())}">《${f}》</a>`
+    )
 }
 
 function UserMessage({ message, onEdit }: { message: UIMessage; onEdit: (c: string) => void }) {
@@ -116,9 +163,11 @@ function ThinkingBlock({ isStreaming }: { isStreaming?: boolean }) {
 function AssistantMessage({
   message,
   onToggleToolCall,
+  onOpenSource,
 }: {
   message: UIMessage
   onToggleToolCall: (toolCallId: string) => void
+  onOpenSource?: (filename: string) => void
 }) {
   const [copied, setCopied] = useState(false)
   const [thinkExpanded, setThinkExpanded] = useState(false)
@@ -200,6 +249,14 @@ function AssistantMessage({
             <div
               className="prose-odi text-sm"
               dangerouslySetInnerHTML={{ __html: renderMarkdown(message.content) }}
+              onClick={(e) => {
+                const target = (e.target as HTMLElement).closest(".source-link")
+                if (target && onOpenSource) {
+                  e.preventDefault()
+                  const fn = (target as HTMLAnchorElement).dataset.filename
+                  if (fn) onOpenSource(fn)
+                }
+              }}
             />
           )}
 
@@ -232,6 +289,7 @@ export default function MessageBubble({
   message,
   onEditMessage,
   onToggleToolCall,
+  onOpenSource,
 }: MessageBubbleProps) {
   if (message.role === "user") {
     return (
@@ -246,6 +304,7 @@ export default function MessageBubble({
     <AssistantMessage
       message={message}
       onToggleToolCall={(toolCallId) => onToggleToolCall(message.id, toolCallId)}
+      onOpenSource={onOpenSource}
     />
   )
 }

@@ -32,8 +32,8 @@ export default function Header({
       className="fixed top-0 left-0 right-0 z-50 flex items-center h-14 px-4 border-b border-border"
       style={{
         background: "var(--header-bg)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
+        backdropFilter: "blur(16px) saturate(180%)",
+        WebkitBackdropFilter: "blur(16px) saturate(180%)",
       }}
     >
       {/* Logo + Brand */}

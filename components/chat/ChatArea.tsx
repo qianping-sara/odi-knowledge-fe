@@ -10,6 +10,7 @@ interface ChatAreaProps {
   isNewSession: boolean
   onEditMessage: (content: string) => void
   onToggleToolCall: (messageId: string, toolCallId: string) => void
+  onOpenSource?: (filename: string) => void
 }
 
 export default function ChatArea({
@@ -17,6 +18,7 @@ export default function ChatArea({
   isNewSession,
   onEditMessage,
   onToggleToolCall,
+  onOpenSource,
 }: ChatAreaProps) {
   const bottomRef = useRef<HTMLDivElement>(null)
 
@@ -41,6 +43,7 @@ export default function ChatArea({
           message={msg}
           onEditMessage={onEditMessage}
           onToggleToolCall={onToggleToolCall}
+          onOpenSource={onOpenSource}
         />
       ))}
       <div ref={bottomRef} />
