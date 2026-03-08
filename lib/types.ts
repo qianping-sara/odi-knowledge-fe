@@ -57,6 +57,13 @@ export interface SSEToolEndEvent {
   ts: string
 }
 
+export interface SSEAnswerDeltaEvent {
+  type: "answer_delta"
+  delta: string
+  session_id?: string
+  ts?: string
+}
+
 export interface SSEFinalEvent {
   type: "final"
   answer: string
@@ -79,6 +86,7 @@ export type SSEEvent =
   | SSEProgressEvent
   | SSEToolStartEvent
   | SSEToolEndEvent
+  | SSEAnswerDeltaEvent
   | SSEFinalEvent
   | SSEErrorEvent
 

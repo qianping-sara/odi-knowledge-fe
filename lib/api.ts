@@ -88,6 +88,7 @@ export async function* sendMessageStream(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ session_id: sessionId, question, stream: true }),
+    cache: "no-store",
   })
 
   if (!res.ok) throw new Error(`sendMessageStream failed: ${res.status}`)

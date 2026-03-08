@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useCallback, useRef } from "react"
+import { flushSync } from "react-dom"
 import type { UIMessage, ToolCall, Session } from "@/lib/types"
 import {
   fetchSessions,
@@ -152,6 +153,23 @@ export function useChat() {
               })
             )
           }
+        } else if (event.type === "answer_delta") {
+          // Tools 完成后，后端以增量形式流式推送答案，逐片段追加展示
+          // 使用 flushSync 强制每次 delta 后立即渲染，避免 React 批处理导致「一次性展示」
+          flushSync(() => {
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantMsgId
+                  ? {
+                      ...m,
+                      content: m.content + (event.delta ?? ""),
+                      isThinking: false,
+                      isStreaming: true,
+                    }
+                  : m
+              )
+            )
+          })
         } else if (event.type === "final") {
           // If a new session was auto-created by backend, sync the session_id
           if (event.session_id && event.session_id !== currentSessionId) {
