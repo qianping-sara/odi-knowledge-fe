@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server"
 
-const BACKEND = "https://odi-knowledge-backend.vercel.app"
+const BACKEND =
+  process.env.BACKEND_BASE_URL ?? "https://odi-knowledge-backend.vercel.app"
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
